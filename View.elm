@@ -16,10 +16,13 @@ root model =
         , container
             [ h4 [ class "center-align" ] [ text (if model.capitals then "Select a state capital to see it on the map" else "Select a state to see it on the map") ]
             , dropdownArea model
-            , stateMap model.state
+            , stateMap model
+            , startText model.startLoc
+            , endText  model.endLoc
             ]
         , pageFooter
         ]
+
 
 
 navbar : Html Msg
@@ -110,13 +113,34 @@ dropdownArea model =
         ]
 
 
-stateMap : String -> Html Msg
-stateMap state =
-    iframe
-        [ src ("https://www.google.com/maps/embed/v1/place?q=" ++ state ++ "&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
-        , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ), ("padding-bottom", "20px") ]
-        ]
-        []
+stateMap : Model -> Html Msg
+stateMap model =
+    if String.isEmpty model.startLoc then
+        if String.isEmpty  model.state then
+            iframe
+                [ src ("https://www.google.com/maps/embed/v1/place?q=Wisconsin&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
+                , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+                ]
+                []
+        else
+            iframe
+                [ src ("https://www.google.com/maps/embed/v1/place?q=" ++ model.state ++ "&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
+                , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+                ]
+                []
+    else
+        if String.isEmpty model.endLoc then
+            iframe
+                [ src ("https://www.google.com/maps/embed/v1/place?q=Wisconsin&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
+                , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+                ]
+                []
+        else
+            iframe
+                [ src ("https://www.google.com/maps/embed/v1/directions?key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E&origin=" ++ model.startLoc ++ "&destination=" ++ model.endLoc)
+                , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+                ]
+                []
 
 pageFooter : Html Msg
 pageFooter =
@@ -141,4 +165,18 @@ pageFooter =
                 ]
             ]
         ]
+    ]
+
+startText : String -> Html Msg
+startText start =
+  div []
+    [ input [ placeholder "Starting Location", onInput ChangeStart ] []
+    , div [] [ text ( start) ]
+    ]
+
+endText : String -> Html Msg
+endText end =
+  div []
+    [ input [ placeholder "Ending Location", onInput ChangeEnd ] []
+    , div [] [ text ( end) ]
     ]
