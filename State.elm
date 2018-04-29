@@ -5,7 +5,8 @@ import Types exposing (..)
 
 init : ( Model, Cmd Msg )
 init =
-    ( { state = "Alabama"
+    ( { state = "Alabama",
+        capitals = False
       }
     , Cmd.none
     )
@@ -19,6 +20,10 @@ update action model =
             , Cmd.none
             )
 
+        ToggleCapitals ->
+            ( { model | capitals = not model.capitals }
+            , Cmd.none
+            )
         _ ->
             ( model, Cmd.none )
 

@@ -9,85 +9,104 @@ import View.Materialize exposing (..)
 
 root : Model -> Html Msg
 root model =
-    div [ style [ ( "height", "100%" ) ], class "blue-grey darken-4 blue-grey-text text-lighten-5" ]
+    div [ style [ ( "display", "block"), ( "overflow", "auto")], class "blue-grey darken-4 blue-grey-text text-lighten-5" ]
         [ materialize
         , navbar
         , materializeJS
         , container
-            [ h4 [ class "center-align" ] [ text "Pick a state to see it in the map!" ]
-            , stateDropdown
+            [ h4 [ class "center-align" ] [ text (if model.capitals then "Select a state capital to see it on the map" else "Select a state to see it on the map") ]
+            , dropdownArea model
             , stateMap model.state
             ]
+        , pageFooter
         ]
 
 
 navbar : Html Msg
 navbar =
     nav [ class "blue darken-4 blue-grey-text text-lighten-5" ]
-        [ div [ class "nav-wrapper" ]
-            [ a [ href "#", class "brand-logo" ] [ text " Elmy Maps" ]
+        [ div [ style [ ("padding-left", "25px") ], class "nav-wrapper" ]
+            [ a [ href "#", class "brand-logo" ] [ text "ELMap" ]
             ]
         ]
 
+capitalToggle : Model -> Html Msg
+capitalToggle model =
+    p [] 
+        [ label []
+            [ input [ type_ "checkbox", Html.Events.onClick ToggleCapitals ] []
+            , span [] [ text "Use State Capitals" ]
+            ]
+        ]
 
-stateDropdown : Html Msg
-stateDropdown =
+stateList : List (String, String)
+stateList = [("Alabama", "Montgomery, AL"),
+             ("Alaska", "Juneau, AK"),
+             ("Arizona", "Phoenix, AZ"),
+             ("Arkansas", "Little Rock, AR"),
+             ("California", "Sacramento, CA"),
+             ("Colorado", "Denver, CO"),
+             ("Connecticut", "Hartford, CT"),
+             ("Delaware", "Dover, DE"),
+             ("Florida", "Tallahassee, FL"),
+             ("Georgia", "Atlanta, GA"),
+             ("Hawaii", "Honolulu, HI"),
+             ("Idaho", "Boise, ID"),
+             ("Illinois", "Springfield, IL"),
+             ("Indiana", "Indianapolis, IN"),
+             ("Iowa", "Des Moines, IA"),
+             ("Kansas", "Topeka, KS"),
+             ("Kentucky", "Frankfort, KY"),
+             ("Louisiana", "Baton Rouge, LA"),
+             ("Maine", "Augusta, ME"),
+             ("Maryland", "Annapolis, MD"),
+             ("Massachusetts", "Boston, MA"),
+             ("Michigan", "Lansing, MI"),
+             ("Minnesota", "St Paul, MN"),
+             ("Mississippi", "Jackson, MS"),
+             ("Missouri", "Jefferson City, MO"),
+             ("Montana", "Helena, MT"),
+             ("Nebraska", "Lincoln, NE"),
+             ("Nevada", "Carson City, NV"),
+             ("New Hampshire", "Concord, NH"),
+             ("New Jersey", "Trenton, NJ"),
+             ("New Mexico", "Santa Fe, NM"),
+             ("New York", "Albany, NY"),
+             ("North Carolina", "Raleigh, NC"),
+             ("North Dakota", "Bismark, ND"),
+             ("Ohio", "Columbus, OH"),
+             ("Oklahoma", "Oklahoma City, OK"),
+             ("Oregon", "Salem, OR"),
+             ("Pennsylvania", "Harrisburg, PA"),
+             ("Rhode Island", "Providence, RI"),
+             ("South Carolina", "Columbia, SC"),
+             ("South Dakota", "Pierre, SD"),
+             ("Tennessee", "Nashville, TN"),
+             ("Texas", "Austin, TX"),
+             ("Utah", "Salt Lake City, UT"),
+             ("Vermont", "Montpelier, VT"),
+             ("Virginia", "Richmond, VA"),
+             ("Washington", "Olympia, WA"),
+             ("West Virginia", "Charleston, WV"),
+             ("Wisconsin", "Madison, WI"),
+             ("Wyoming", "Cheyenne, WY")
+            ]
+
+makeStateOption : Bool -> (String, String) -> Html Msg
+makeStateOption useCapitals stateTuple =
+    let
+        (stateName, stateCapital) = stateTuple
+    in
+        option [ value (if useCapitals then stateCapital else stateName) ] [ text (if useCapitals then stateCapital else stateName) ]
+
+dropdownArea : Model -> Html Msg
+dropdownArea model =
     div [ class "row" ]
         [ div [ class "col s4 offset-s4" ]
             [ select [ style [ ( "display", "block" ) ], Html.Events.onInput ChangeState ]
-                [ option [ value "Alabama" ] [ text "Alabama" ]
-                , option [ value "Alaska" ] [ text "Alaska" ]
-                , option [ value "Arizona" ] [ text "Arizona" ]
-                , option [ value "Arkansas" ] [ text "Arkansas" ]
-                , option [ value "California" ] [ text "California" ]
-                , option [ value "Colorado" ] [ text "Colorado" ]
-                , option [ value "Connecticut" ] [ text "Connecticut" ]
-                , option [ value "Delaware" ] [ text "Delaware" ]
-                , option [ value "Florida" ] [ text "Florida" ]
-                , option [ value "Georgia" ] [ text "Georgia" ]
-                , option [ value "Hawaii" ] [ text "Hawaii" ]
-                , option [ value "Idaho" ] [ text "Idaho" ]
-                , option [ value "Illinois" ] [ text "Illinois" ]
-                , option [ value "Indiana" ] [ text "Indiana" ]
-                , option [ value "Iowa" ] [ text "Iowa" ]
-                , option [ value "Kansas" ] [ text "Kansas" ]
-                , option [ value "Kentucky" ] [ text "Kentucky" ]
-                , option [ value "Louisiana" ] [ text "Louisiana" ]
-                , option [ value "Maine" ] [ text "Maine" ]
-                , option [ value "Maryland" ] [ text "Maryland" ]
-                , option [ value "Massachusetts" ] [ text "Massachusetts" ]
-                , option [ value "Michigan" ] [ text "Michigan" ]
-                , option [ value "Minnesota" ] [ text "Minnesota" ]
-                , option [ value "Mississippi" ] [ text "Mississippi" ]
-                , option [ value "Missouri" ] [ text "Missouri" ]
-                , option [ value "Montana" ] [ text "Montana" ]
-                , option [ value "Nebraska" ] [ text "Nebraska" ]
-                , option [ value "Nevada" ] [ text "Nevada" ]
-                , option [ value "New Hampshire" ] [ text "New Hampshire" ]
-                , option [ value "New Jersey" ] [ text "New Jersey" ]
-                , option [ value "New Mexico" ] [ text "New Mexico" ]
-                , option [ value "New York" ] [ text "New York" ]
-                , option [ value "North Carolina" ] [ text "North Carolina" ]
-                , option [ value "North Dakota" ] [ text "North Dakota" ]
-                , option [ value "Ohio" ] [ text "Ohio" ]
-                , option [ value "Oklahoma" ] [ text "Oklahoma" ]
-                , option [ value "Oregon" ] [ text "Oregon" ]
-                , option [ value "Pennsylvania" ] [ text "Pennsylvania" ]
-                , option [ value "Rhode Island" ] [ text "Rhode Island" ]
-                , option [ value "South Carolina" ] [ text "South Carolina" ]
-                , option [ value "South Dakota" ] [ text "South Dakota" ]
-                , option [ value "Tennessee" ] [ text "Tennessee" ]
-                , option [ value "Texas" ] [ text "Texas" ]
-                , option [ value "Utah" ] [ text "Utah" ]
-                , option [ value "Vermont" ] [ text "Vermont" ]
-                , option [ value "Virginia" ] [ text "Virginia" ]
-                , option [ value "Washington" ] [ text "Washington" ]
-                , option [ value "West Virginia" ] [ text "West Virginia" ]
-                , option [ value "Wisconsin" ] [ text "Wisconsin" ]
-                , option [ value "Wyoming" ] [ text "Wyoming" ]
-                ]
-            , label [] [ text "State Selector" ]
-            ]
+                (List.map (\x -> (makeStateOption model.capitals x)) stateList)
+            ],
+            capitalToggle model
         ]
 
 
@@ -95,6 +114,31 @@ stateMap : String -> Html Msg
 stateMap state =
     iframe
         [ src ("https://www.google.com/maps/embed/v1/place?q=" ++ state ++ "&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
-        , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+        , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ), ("padding-bottom", "20px") ]
         ]
         []
+
+pageFooter : Html Msg
+pageFooter =
+    footer [ class "blue darken-4 page-footer" ] [
+        container [
+            row [
+                div [ ] [
+                    h5 [ class "blue-grey-text text-lighten-5" ] [
+                        text "Links for CPD"
+                    ],
+                    ul [] [
+                        li [] [
+                            a [ class "blue-grey-text text-lighten-5", href "https://guide.elm-lang.org/install.html"] [ text "Elm's Offical Getting Started guide"]
+                        ],
+                        li [] [
+                            a [ class "blue-grey-text text-lighten-5", href "http://elmprogramming.com/"] [ text "Beginning Elm - 'A gentle introduction to the Elm Programming Language'"]
+                        ], --https://www.elm-tutorial.org/en/
+                         li [] [
+                            a [ class "blue-grey-text text-lighten-5", href "https://www.elm-tutorial.org/en/"] [ text "Elm Tutorial - A tutorial on developing SPAs with Elm."]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ]

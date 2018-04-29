@@ -40,3 +40,7 @@ materializeJS =
 container : List (Html a) -> Html a
 container =
     div [ class "container" ]
+
+row : List (Html a) -> Html a
+row =
+    div [ class "row" ]
