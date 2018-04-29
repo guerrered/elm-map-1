@@ -2,7 +2,7 @@
     "name": "Elmap",
     "repository": "https://github.com/Heathur/elm-map",
     "env": {
-        "ELM_COMPILE": "elm make App.elm --output elm.js"
+        "ELM_COMPILE": "elm make App.elm"
     },
     "buildpacks": [
         {
