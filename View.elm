@@ -16,9 +16,13 @@ root model =
         , container
             [ h4 [ class "center-align" ] [ text "Pick a state to see it in the map!" ]
             , stateDropdown
-            , stateMap model.state
+            , stateMap model
+            , startText model.startLoc
+            , endText  model.endLoc
             ]
+
         ]
+
 
 
 navbar : Html Msg
@@ -91,10 +95,46 @@ stateDropdown =
         ]
 
 
-stateMap : String -> Html Msg
-stateMap state =
-    iframe
-        [ src ("https://www.google.com/maps/embed/v1/place?q=" ++ state ++ "&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
-        , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
-        ]
-        []
+stateMap : Model -> Html Msg
+stateMap model =
+    if String.isEmpty model.startLoc then
+        if String.isEmpty  model.state then
+            iframe
+                [ src ("https://www.google.com/maps/embed/v1/place?q=Wisconsin&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
+                , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+                ]
+                []
+        else
+            iframe
+                [ src ("https://www.google.com/maps/embed/v1/place?q=" ++ model.state ++ "&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
+                , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+                ]
+                []
+    else
+        if String.isEmpty model.endLoc then
+            iframe
+                [ src ("https://www.google.com/maps/embed/v1/place?q=Wisconsin&key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E")
+                , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+                ]
+                []
+        else
+            iframe
+                [ src ("https://www.google.com/maps/embed/v1/directions?key=AIzaSyCxw5Ao25vChvrxHrKzW8BH7CjVOYL4G1E&origin=" ++ model.startLoc ++ "&destination=" ++ model.endLoc)
+                , style [ ( "border", "0" ), ( "width", "100%" ), ( "height", "700px" ) ]
+                ]
+                []
+
+
+startText : String -> Html Msg
+startText start =
+  div []
+    [ input [ placeholder "Starting Location", onInput ChangeStart ] []
+    , div [] [ text ( start) ]
+    ]
+
+endText : String -> Html Msg
+endText end =
+  div []
+    [ input [ placeholder "Ending Location", onInput ChangeEnd ] []
+    , div [] [ text ( end) ]
+    ]
